@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GIRASOL - SOLUCIONES SOLARES SOSTENIBLES</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- QR Code Generator JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#ecfdf5',
+                            100: '#d1fae5',
+                            500: '#10b981',
+                            600: '#059669',
+                            700: '#047857',
+                            800: '#065f46',
+                        },
+                        solar: {
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                        },
+                        dark: {
+                            800: '#1e293b',
+                            900: '#0f172a',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gradient-header {
+            background: linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #065F46 100%);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="h-full flex flex-col font-sans text-slate-800 antialiased selection:bg-brand-500 selection:text-white">
+
+    <!-- Top Navigation Bar -->
+    <header class="gradient-header text-white sticky top-0 z-40 shadow-lg border-b border-slate-700">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Brand Logo -->
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('dashboard')">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-500 to-solar-400 flex items-center justify-center shadow-md text-slate-900 font-extrabold text-xl">
+                        <i class="fa-solid fa-arrows-spin text-white"></i>
+                    </div>
+                    <div>
+                        <span class="font-extrabold text-xl tracking-tight text-white">GIRASOL <span class="text-solar-400"></span></span>
+                        <span class="block text-xs text-brand-100 font-medium tracking-wide">SOLUCION SOLARES SOSTENIBLES</span>
+                    </div>
+                </div>
+
+                <!-- Navigation Tabs (Desktop) -->
+                <nav class="hidden md:flex space-x-1 lg:space-x-2">
+                    <button onclick="switchTab('dashboard')" id="nav-dashboard" class="tab-btn px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:bg-slate-800/60 flex items-center space-x-2 text-brand-100 bg-slate-800/80 border border-brand-500/30">
+                        <i class="fa-solid fa-chart-pie text-brand-500"></i>
+                        <span>Panel de Impacto</span>
+                    </button>
+                    <button onclick="switchTab('intake')" id="nav-intake" class="tab-btn px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:bg-slate-800/60 flex items-center space-x-2 text-slate-300">
+                        <i class="fa-solid fa-clipboard-list text-solar-400"></i>
+                        <span>Registro e Inspección</span>
+                    </button>
+                    <button onclick="switchTab('engine')" id="nav-engine" class="tab-btn px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:bg-slate-800/60 flex items-center space-x-2 text-slate-300">
+                        <i class="fa-solid fa-brain text-emerald-400"></i>
+                        <span>Motor de Decisión</span>
+                    </button>
+                    <button onclick="switchTab('disciplines')" id="nav-disciplines" class="tab-btn px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:bg-slate-800/60 flex items-center space-x-2 text-slate-300">
+                        <i class="fa-solid fa-diagram-project text-sky-400"></i>
+                        <span>Análisis Multidisciplinario</span>
+                    </button>
+                    <button onclick="switchTab('traceability')" id="nav-traceability" class="tab-btn px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:bg-slate-800/60 flex items-center space-x-2 text-slate-300">
+                        <i class="fa-solid fa-qrcode text-purple-400"></i>
+                        <span>Trazabilidad</span>
+                    </button>
+                </nav>
+
+                <!-- Quick Action Buttons -->
+                <div class="hidden sm:flex items-center space-x-3">
+                    <button onclick="openTestCasesModal()" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-solar-500 hover:bg-solar-600 text-slate-900 transition-all shadow flex items-center space-x-1.5">
+                        <i class="fa-solid fa-vial"></i>
+                        <span>Casos de Prueba</span>
+                    </button>
+                </div>
+
+                <!-- Mobile menu button -->
+                <div class="md:hidden flex items-center">
+                    <button onclick="toggleMobileMenu()" class="text-slate-300 hover:text-white p-2">
+                        <i class="fa-solid fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Navigation -->
+        <div id="mobile-menu" class="hidden md:hidden bg-slate-900 border-b border-slate-700 px-4 pt-2 pb-4 space-y-2">
+            <button onclick="switchTab('dashboard'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-md text-sm font-medium text-white bg-slate-800">Panel de Impacto</button>
+            <button onclick="switchTab('intake'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-md text-sm font-medium text-slate-300 hover:bg-slate-800">Registro e Inspección</button>
+            <button onclick="switchTab('engine'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-md text-sm font-medium text-slate-300 hover:bg-slate-800">Motor de Decisión</button>
+            <button onclick="switchTab('disciplines'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-md text-sm font-medium text-slate-300 hover:bg-slate-800">Análisis Multidisciplinario</button>
+            <button onclick="switchTab('traceability'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-md text-sm font-medium text-slate-300 hover:bg-slate-800">Trazabilidad</button>
+            <button onclick="openTestCasesModal(); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-md text-sm font-semibold bg-solar-500 text-slate-900">Casos de Prueba Creados</button>
+        </div>
+    </header>
+
+    <!-- Main Content Body -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- Notification Banner -->
+        <div id="toast-banner" class="hidden mb-6 p-4 rounded-xl shadow-md border bg-emerald-50 border-emerald-200 text-emerald-800 flex items-start justify-between">
+            <div class="flex items-center space-x-3">
+                <i class="fa-solid fa-circle-check text-emerald-600 text-xl"></i>
+                <span id="toast-message" class="text-sm font-medium">¡Operación completada exitosamente!</span>
+            </div>
+            <button onclick="closeToast()" class="text-emerald-500 hover:text-emerald-700"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <!-- TAB 1: DASHBOARD DE IMPACTO Y ECONOMÍA CIRCULAR -->
+        <section id="tab-dashboard" class="tab-content space-y-6">
+            <!-- Header Banner -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div>
+                    <h1 class="text-2xl font-bold text-slate-900 flex items-center space-x-2">
+                        <span>Panel de Impacto y Sostenibilidad</span>
+                        <span class="bg-brand-100 text-brand-800 text-xs px-2.5 py-0.5 rounded-full font-semibold">En Vivo</span>
+                    </h1>
+                    <p class="text-slate-500 text-sm mt-1">Monitoreo integral de paneles solares procesados, valorización de componentes y reducción de huella ecológica.</p>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <button onclick="switchTab('intake')" class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-xl font-medium text-sm transition shadow-sm flex items-center space-x-2">
+                        <i class="fa-solid fa-plus"></i>
+                        <span>Nueva Inspección</span>
+                    </button>
+                    <button onclick="window.print()" class="px-3 py-2 border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-xl text-sm font-medium transition">
+                        <i class="fa-solid fa-print"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Metric Cards KPIs -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- Card 1 -->
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 hover:shadow-md transition">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Paneles Procesados</span>
+                        <div class="w-9 h-9 rounded-xl bg-solar-500/10 text-solar-600 flex items-center justify-center">
+                            <i class="fa-solid fa-solar-panel"></i>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <span id="kpi-total-modules" class="text-3xl font-extrabold text-slate-900">1,248</span>
+                        <span class="text-xs font-medium text-emerald-600 ml-2"><i class="fa-solid fa-arrow-up"></i> +12% este mes</span>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-1">Módulos retirados gestionados</p>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 hover:shadow-md transition">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">CO₂ Evitado</span>
+                        <div class="w-9 h-9 rounded-xl bg-brand-500/10 text-brand-600 flex items-center justify-center">
+                            <i class="fa-solid fa-leaf"></i>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <span id="kpi-co2-saved" class="text-3xl font-extrabold text-slate-900">184.2</span>
+                        <span class="text-xs font-medium text-slate-500 ml-1">Toneladas</span>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-1">Equivalente a plantar 2,900 árboles</p>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 hover:shadow-md transition">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Materiales Recuperados</span>
+                        <div class="w-9 h-9 rounded-xl bg-sky-500/10 text-sky-600 flex items-center justify-center">
+                            <i class="fa-solid fa-recycle"></i>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <span id="kpi-materials-recovered" class="text-3xl font-extrabold text-slate-900">22.4</span>
+                        <span class="text-xs font-medium text-slate-500 ml-1">Tons (Vidrio, Al, Si)</span>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-1">94.2% tasa de desviación de vertederos</p>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 hover:shadow-md transition">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Ahorro Social / Comunitario</span>
+                        <div class="w-9 h-9 rounded-xl bg-purple-500/10 text-purple-600 flex items-center justify-center">
+                            <i class="fa-solid fa-hand-holding-dollar"></i>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <span id="kpi-social-savings" class="text-3xl font-extrabold text-slate-900">$48,200</span>
+                        <span class="text-xs font-medium text-slate-500 ml-1">USD</span>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-1">En bombeo agrícola y elect. rural</p>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Chart 1: Distribution of Final Destination -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 lg:col-span-1 flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-base font-bold text-slate-900">Distribución por Destino Circular</h3>
+                        <p class="text-xs text-slate-500 mt-1">Proporción de módulos según alternativa asignada</p>
+                    </div>
+                    <div class="relative my-4 h-64">
+                        <canvas id="chartDestinations"></canvas>
+                    </div>
+                    <div class="grid grid-cols-3 gap-2 text-center text-xs pt-2 border-t border-slate-100">
+                        <div>
+                            <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500 mr-1"></span> Reutilización
+                        </div>
+                        <div>
+                            <span class="inline-block w-2.5 h-2.5 rounded-full bg-amber-500 mr-1"></span> Rehabilitación
+                        </div>
+                        <div>
+                            <span class="inline-block w-2.5 h-2.5 rounded-full bg-slate-600 mr-1"></span> Reciclaje
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chart 2: Material Recovery Breakdown -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 lg:col-span-2 flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-base font-bold text-slate-900">Desglose de Materiales Valorizados y Reciclados</h3>
+                        <p class="text-xs text-slate-500 mt-1">Estimación en kilogramos recuperados por componentes clave</p>
+                    </div>
+                    <div class="relative my-4 h-64">
+                        <canvas id="chartMaterials"></canvas>
+                    </div>
+                    <div class="flex justify-between items-center text-xs text-slate-500 pt-2 border-t border-slate-100">
+                        <span><i class="fa-solid fa-shield-halved text-brand-600 mr-1"></i> Basado en estándares ISO 14040 de Análisis de Ciclo de Vida (LCA)</span>
+                        <button onclick="switchTab('traceability')" class="text-brand-600 font-semibold hover:underline">Ver Trazabilidad &rarr;</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Requests Table Snapshot -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="p-5 border-b border-slate-100 flex items-center justify-between">
+                    <div>
+                        <h3 class="text-base font-bold text-slate-900">Últimas Solicitudes Registradas</h3>
+                        <p class="text-xs text-slate-500">Módulos ingresados recientemente para diagnóstico</p>
+                    </div>
+                    <button onclick="switchTab('intake')" class="text-xs font-semibold text-brand-600 hover:text-brand-700 border border-brand-200 bg-brand-50 hover:bg-brand-100 px-3 py-1.5 rounded-lg transition">
+                        + Registrar Nueva Solicitud
+                    </button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs text-slate-600">
+                        <thead class="bg-slate-50 text-slate-700 uppercase tracking-wider font-semibold border-b border-slate-200">
+                            <tr>
+                                <th class="px-6 py-3">Código / ID</th>
+                                <th class="px-6 py-3">Cliente / Origen</th>
+                                <th class="px-6 py-3">Cantidad</th>
+                                <th class="px-6 py-3">Eficiencia Estimada</th>
+                                <th class="px-6 py-3">Ruta Recomendada</th>
+                                <th class="px-6 py-3">Estado</th>
+                                <th class="px-6 py-3 text-right">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recent-requests-tbody" class="divide-y divide-slate-100 font-medium">
+                            <!-- Populated dynamically via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: REGISTRO DE SOLICITUDES Y EVALUACIÓN PRELIMINAR -->
+        <section id="tab-intake" class="tab-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                <div class="border-b border-slate-100 pb-4 mb-6">
+                    <h2 class="text-xl font-bold text-slate-900 flex items-center space-x-2">
+                        <i class="fa-solid fa-clipboard-check text-solar-500"></i>
+                        <span>Registro e Inspección de Paneles Solares</span>
+                    </h2>
+                    <p class="text-slate-500 text-sm mt-1">Ingrese la información técnica de los módulos fotovoltaicos desmantelados o en retiro para su diagnóstico inicial.</p>
+                </div>
+
+                <form id="inspectionForm" onsubmit="handleFormSubmit(event)" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Owner & Origin Info -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Cliente / Organización</label>
+                            <input type="text" id="form-client" required placeholder="Ej. Agropecuaria del Norte S.A." class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-sm">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Ubicación / Origen</label>
+                            <input type="text" id="form-location" required placeholder="Ej. Hermosillo, Sonora" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-sm">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Distancia Logística (km)</label>
+                            <input type="number" id="form-distance" required min="1" value="45" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-sm">
+                        </div>
+
+                        <!-- Technical Details -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Marca y Modelo</label>
+                            <input type="text" id="form-model" required placeholder="Ej. Canadian Solar 330W Mono" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-sm">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Cantidad de Módulos</label>
+                            <input type="number" id="form-quantity" required min="1" value="25" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-sm">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Años de Operación</label>
+                            <input type="number" id="form-years" required min="0" max="30" value="12" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-sm">
+                        </div>
+                    </div>
+
+                    <!-- Visual and Technical Inspection Checklist -->
+                    <div class="bg-slate-50 p-5 rounded-xl border border-slate-200">
+                        <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider mb-3">Checklist de Defectos Visuales y Electromecánicos</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                            <label class="flex items-center space-x-2 bg-white p-3 rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-100 transition">
+                                <input type="checkbox" id="defect-glass" class="w-4 h-4 text-brand-600 rounded focus:ring-brand-500">
+                                <span class="text-xs font-semibold text-slate-700">Vidrio Frontal Quebrado</span>
+                            </label>
+
+                            <label class="flex items-center space-x-2 bg-white p-3 rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-100 transition">
+                                <input type="checkbox" id="defect-backsheet" class="w-4 h-4 text-brand-600 rounded focus:ring-brand-500">
+                                <span class="text-xs font-semibold text-slate-700">Backsheet Dañado / Grietas</span>
+                            </label>
+
+                            <label class="flex items-center space-x-2 bg-white p-3 rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-100 transition">
+                                <input type="checkbox" id="defect-jbox" class="w-4 h-4 text-brand-600 rounded focus:ring-brand-500">
+                                <span class="text-xs font-semibold text-slate-700">Caja de Conexión / Diodos Quemados</span>
+                            </label>
+
+                            <label class="flex items-center space-x-2 bg-white p-3 rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-100 transition">
+                                <input type="checkbox" id="defect-delamination" class="w-4 h-4 text-brand-600 rounded focus:ring-brand-500">
+                                <span class="text-xs font-semibold text-slate-700">Deslaminación Severa / EVA</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Performance Rating Input -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                        <div>
+                            <div class="flex justify-between items-center mb-1">
+                                <label class="text-xs font-bold text-slate-700 uppercase">Eficiencia Remanente Estimada (%)</label>
+                                <span id="efficiency-val" class="text-sm font-extrabold text-brand-600">75%</span>
+                            </div>
+                            <input type="range" id="form-efficiency" min="0" max="100" value="75" oninput="document.getElementById('efficiency-val').innerText = this.value + '%'" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-600">
+                            <p class="text-xs text-slate-500 mt-1">Basado en prueba de curva I-V rápida o electroluminiscencia preliminar.</p>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Aplicación de Reuso Pretendida (Opcional)</label>
+                            <select id="form-intended-use" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 text-sm">
+                                <option value="auto">Evaluación Automática del Sistema</option>
+                                <option value="agri">Bombeo Solar Agrícola (Baja Demanda)</option>
+                                <option value="community">Electrificación de Centro Comunitario / Rural</option>
+                                <option value="backup">Sistema de Respaldo Residencial / Iluminación</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end space-x-3 pt-4 border-t border-slate-100">
+                        <button type="reset" class="px-5 py-2.5 border border-slate-300 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-50 transition">Limpiar Campos</button>
+                        <button type="submit" class="px-6 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs font-bold transition shadow-md flex items-center space-x-2">
+                            <i class="fa-solid fa-calculator"></i>
+                            <span>Evaluar y Procesar Solicitud</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- TAB 3: MOTOR DE DECISIÓN Y EVALUACIÓN COMPARATIVA -->
+        <section id="tab-engine" class="tab-content hidden space-y-6">
+            <!-- Header section -->
+            <div class="bg-slate-900 text-white p-6 rounded-2xl shadow-md flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                <div>
+                    <div class="flex items-center space-x-2">
+                        <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-solar-500 text-slate-900">Algoritmo Activo</span>
+                        <h2 class="text-xl font-bold">Motor Integrado de Decisión Circular</h2>
+                    </div>
+                    <p class="text-slate-300 text-xs mt-1">Matriz de decisión ponderada para la selección de la ruta óptima basada en viabilidad técnica, económica y ambiental.</p>
+                </div>
+                <button onclick="openTestCasesModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-solar-400 border border-slate-700 text-xs font-semibold rounded-xl transition">
+                    <i class="fa-solid fa-folder-open mr-1"></i> Cargar Caso de Prueba
+                </button>
+            </div>
+
+            <!-- Active Evaluation Case Summary Card -->
+            <div id="engine-case-card" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-slate-100 pb-4 mb-4 gap-2">
+                    <div>
+                        <span class="text-xs font-bold text-brand-600 uppercase tracking-wider">Lote en Evaluación Activa</span>
+                        <h3 id="eval-title" class="text-lg font-bold text-slate-900">Parque Solar Agrícola - Lote #SOL-2026-882</h3>
+                        <p id="eval-subtitle" class="text-xs text-slate-500">50 Módulos Canadian Solar 330W | 12 Años de Operación | Ubicación: Hermosillo (45 km)</p>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <div class="text-right">
+                            <span class="block text-xs text-slate-400">Score de Condición</span>
+                            <span id="eval-condition-score" class="text-lg font-extrabold text-amber-500">68 / 100</span>
+                        </div>
+                        <div class="w-12 h-12 rounded-full bg-slate-100 border-2 border-amber-400 flex items-center justify-center text-amber-600 font-bold text-sm" id="eval-score-badge">
+                            68%
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3 Circular Pathways Comparison -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 my-6">
+                    
+                    <!-- Pathway 1: Rehabilitación -->
+                    <div id="pathway-rehab" class="rounded-2xl p-5 border-2 transition-all relative flex flex-col justify-between bg-slate-50 border-slate-200 hover:border-amber-400">
+                        <div id="badge-rehab" class="hidden absolute -top-3 right-4 bg-amber-500 text-slate-900 text-[10px] uppercase font-black px-2.5 py-0.5 rounded-full shadow">
+                            Recomendado
+                        </div>
+                        <div>
+                            <div class="flex items-center space-x-2 text-amber-600 mb-2">
+                                <i class="fa-solid fa-wrench text-lg"></i>
+                                <h4 class="font-bold text-sm">1. Rehabilitación</h4>
+                            </div>
+                            <p class="text-xs text-slate-600 mb-3">Mantenimiento correctivo/preventivo (reemplazo de diodos, sellado de backsheet, limpieza intensiva).</p>
+
+                            <div class="space-y-2 text-xs border-t border-slate-200 pt-3">
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">Viabilidad Técnica:</span>
+                                    <span id="rehab-tech-score" class="font-bold text-slate-800">Alta (85%)</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">Costo Estimado Reparación:</span>
+                                    <span id="rehab-cost" class="font-bold text-slate-800">$18 USD / módulo</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">Valor Comercial Resultante:</span>
+                                    <span id="rehab-value" class="font-bold text-emerald-600">$55 USD / módulo</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">ROI Estimado:</span>
+                                    <span id="rehab-roi" class="font-bold text-slate-800">+205%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button onclick="selectPathway('Rehabilitación')" class="mt-4 w-full py-2 px-3 rounded-xl border border-amber-500 text-amber-700 font-semibold text-xs hover:bg-amber-50 transition">
+                            Asignar Rehabilitación
+                        </button>
+                    </div>
+
+                    <!-- Pathway 2: Reutilización Directa -->
+                    <div id="pathway-reuse" class="rounded-2xl p-5 border-2 transition-all relative flex flex-col justify-between bg-emerald-50/50 border-brand-500 ring-2 ring-brand-500/20 shadow-md">
+                        <div id="badge-reuse" class="absolute -top-3 right-4 bg-brand-500 text-white text-[10px] uppercase font-black px-2.5 py-0.5 rounded-full shadow">
+                            Ruta Óptima Sugerida
+                        </div>
+                        <div>
+                            <div class="flex items-center space-x-2 text-brand-600 mb-2">
+                                <i class="fa-solid fa-hand-holding-heart text-lg"></i>
+                                <h4 class="font-bold text-sm">2. Reutilización Directa</h4>
+                            </div>
+                            <p class="text-xs text-slate-600 mb-3">Reasignación a aplicaciones de menor demanda (bombeo de agua agrícola, electrificación rural, sistemas off-grid).</p>
+
+                            <div class="space-y-2 text-xs border-t border-brand-200/60 pt-3">
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">Aptitud de Reuso:</span>
+                                    <span id="reuse-fit-score" class="font-bold text-emerald-700">Óptima (78% Cap.)</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">Costo Adaptación/Logística:</span>
+                                    <span id="reuse-cost" class="font-bold text-slate-800">$8 USD / módulo</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">Beneficiario Recomendado:</span>
+                                    <span id="reuse-target" class="font-bold text-brand-700">Pozo Agrícola Local</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">Impacto Social Ponderado:</span>
+                                    <span id="reuse-impact" class="font-bold text-emerald-600">Muy Alto (92/100)</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button onclick="selectPathway('Reutilización')" class="mt-4 w-full py-2 px-3 rounded-xl bg-brand-600 text-white font-semibold text-xs hover:bg-brand-700 transition shadow">
+                            Asignar Reutilización
+                        </button>
+                    </div>
+
+                    <!-- Pathway 3: Reciclaje Especializado -->
+                    <div id="pathway-recycle" class="rounded-2xl p-5 border-2 transition-all relative flex flex-col justify-between bg-slate-50 border-slate-200 hover:border-slate-400">
+                        <div id="badge-recycle" class="hidden absolute -top-3 right-4 bg-slate-700 text-white text-[10px] uppercase font-black px-2.5 py-0.5 rounded-full shadow">
+                            Recomendado
+                        </div>
+                        <div>
+                            <div class="flex items-center space-x-2 text-slate-700 mb-2">
+                                <i class="fa-solid fa-recycle text-lg"></i>
+                                <h4 class="font-bold text-sm">3. Reciclaje Especializado</h4>
+                            </div>
+                            <p class="text-xs text-slate-600 mb-3">Desmantelamiento y recuperación de materias primas secundarias (Vidrio, Aluminio, Silicio, Plata, Cobre).</p>
+
+                            <div class="space-y-2 text-xs border-t border-slate-200 pt-3">
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">Tasa Recuperación Material:</span>
+                                    <span id="recycle-rate" class="font-bold text-slate-800">92.5% Masa</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">Costo Procesamiento:</span>
+                                    <span id="recycle-cost" class="font-bold text-slate-800">$12 USD / módulo</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">Valor Materia Prima Recup.:</span>
+                                    <span id="recycle-value" class="font-bold text-slate-800">$14.50 USD / módulo</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">Gestor Certificado:</span>
+                                    <span id="recycle-manager" class="font-bold text-slate-700">EcoRecycle PV S.A.</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button onclick="selectPathway('Reciclaje Especializado')" class="mt-4 w-full py-2 px-3 rounded-xl border border-slate-400 text-slate-700 font-semibold text-xs hover:bg-slate-200 transition">
+                            Asignar Reciclaje
+                        </button>
+                    </div>
+
+                </div>
+
+                <!-- Recommendation Rationale Box -->
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex items-start space-x-3">
+                    <div class="p-2 bg-brand-100 text-brand-700 rounded-lg mt-0.5">
+                        <i class="fa-solid fa-lightbulb text-lg"></i>
+                    </div>
+                    <div class="text-xs space-y-1">
+                        <h5 class="font-bold text-slate-900">Justificación del Algoritmo Circular SOLAR CIRCULAR 360:</h5>
+                        <p id="eval-rationale" class="text-slate-600 leading-relaxed">
+                            Los módulos presentan una eficiencia remanente del <span class="font-semibold text-slate-800">75%</span> y únicamente fallas menores en diodos de bypass. La rehabilitación o reutilización directa en bombas de agua agrícolas maximiza la vida útil residual del equipo sin incurrir en la huella de carbono asociada al reciclaje térmico o químico prematuro.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: APORTES MULTIDISCIPLINARIOS DE INGENIERÍA Y ARQUITECTURA -->
+        <section id="tab-disciplines" class="tab-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                <div class="border-b border-slate-100 pb-4 mb-6">
+                    <h2 class="text-xl font-bold text-slate-900 flex items-center space-x-2">
+                        <i class="fa-solid fa-layer-group text-sky-500"></i>
+                        <span>Análisis Multidisciplinario de Integración</span>
+                    </h2>
+                    <p class="text-slate-500 text-sm mt-1">Aportes complementarios de las 4 áreas del conocimiento para asegurar la viabilidad técnica, financiera, logística y espacial.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Electromechanics -->
+                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center space-x-3 mb-3">
+                                <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center font-bold">
+                                    <i class="fa-solid fa-bolt text-lg"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-sm text-slate-900">Electromecánica</h3>
+                                    <span class="text-xs text-amber-600 font-semibold">Diagnóstico & Seguridad Eléctrica</span>
+                                </div>
+                            </div>
+                            <ul class="text-xs text-slate-600 space-y-2 list-disc list-inside">
+                                <li>Pruebas de curvatura I-V y medición de Resistencia de Aislamiento (Riso).</li>
+                                <li>Termografía infrarroja para detección de puntos calientes (Hotspots).</li>
+                                <li>Reemplazo de cajas de juntura y soldadura de diodos de bypass defectuosos.</li>
+                                <li>Verificación de puesta a tierra y pruebas de rigidez dieléctrica.</li>
+                            </ul>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-slate-200 text-xs font-semibold text-slate-700 flex justify-between">
+                            <span>Estado de Diagnóstico:</span>
+                            <span class="text-emerald-600"><i class="fa-solid fa-check-circle"></i> Protocolo Aprobado</span>
+                        </div>
+                    </div>
+
+                    <!-- Business Management -->
+                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center space-x-3 mb-3">
+                                <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center font-bold">
+                                    <i class="fa-solid fa-chart-line text-lg"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-sm text-slate-900">Gestión Empresarial</h3>
+                                    <span class="text-xs text-emerald-600 font-semibold">Presupuestos & Viabilidad Financiera</span>
+                                </div>
+                            </div>
+                            <ul class="text-xs text-slate-600 space-y-2 list-disc list-inside">
+                                <li>Análisis de Costo-Beneficio (Reparación vs Adquisición de Módulo Nuevo).</li>
+                                <li>Estructuración de modelos de negocio de segunda vida (Leasing / Donación deducible).</li>
+                                <li>Cálculo de Retorno de Inversión (ROI) e Indicadores LCOE Reutilizado.</li>
+                                <li>Monetización de créditos de carbono y sellos de responsabilidad social.</li>
+                            </ul>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-slate-200 text-xs font-semibold text-slate-700 flex justify-between">
+                            <span>ROI Proyecto Actual:</span>
+                            <span class="text-brand-600 font-bold">+180% Promedio</span>
+                        </div>
+                    </div>
+
+                    <!-- Industrial Engineering -->
+                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center space-x-3 mb-3">
+                                <div class="w-10 h-10 rounded-xl bg-sky-500/10 text-sky-600 flex items-center justify-center font-bold">
+                                    <i class="fa-solid fa-truck-fast text-lg"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-sm text-slate-900">Ingeniería Industrial</h3>
+                                    <span class="text-xs text-sky-600 font-semibold">Logística Reversa & Rutas Óptimas</span>
+                                </div>
+                            </div>
+                            <ul class="text-xs text-slate-600 space-y-2 list-disc list-inside">
+                                <li>Optimización de rutas de recolección para minimizar km recorridos y huella de diésel.</li>
+                                <li>Estandarización del proceso de embalaje protector para evitar roturas en tránsito.</li>
+                                <li>Indicadores de Eficiencia Operativa (OEE) en plantas de desmantelamiento.</li>
+                                <li>Mapeo de la cadena de suministro de reciclaje especializado local.</li>
+                            </ul>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-slate-200 text-xs font-semibold text-slate-700 flex justify-between">
+                            <span>Reducción Huella Logística:</span>
+                            <span class="text-sky-600 font-bold">-32% Emisiones de Flota</span>
+                        </div>
+                    </div>
+
+                    <!-- Architecture -->
+                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center space-x-3 mb-3">
+                                <div class="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-600 flex items-center justify-center font-bold">
+                                    <i class="fa-solid fa-compass-drafting text-lg"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-sm text-slate-900">Arquitectura</h3>
+                                    <span class="text-xs text-purple-600 font-semibold">Integración Espacial y Adaptación BIPV</span>
+                                </div>
+                            </div>
+                            <ul class="text-xs text-slate-600 space-y-2 list-disc list-inside">
+                                <li>Evaluación de capacidad portante de cubiertas e infraestructuras comunitarias.</li>
+                                <li>Diseño de estructuras portantes de bajo costo para bombeo y sombras solares.</li>
+                                <li>Integración estética de módulos en cubiertas de centros comunitarios rurales.</li>
+                                <li>Análisis de asoleamiento, sombras dinámicas y orientación óptima de reuso.</li>
+                            </ul>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-slate-200 text-xs font-semibold text-slate-700 flex justify-between">
+                            <span>Evaluación de Espacio:</span>
+                            <span class="text-purple-600 font-bold">Apto para Techos & Pergolas</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 5: TRAZABILIDAD Y REGISTRO DIGITAL -->
+        <section id="tab-traceability" class="tab-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                <div class="border-b border-slate-100 pb-4 mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-900 flex items-center space-x-2">
+                            <i class="fa-solid fa-barcode text-purple-500"></i>
+                            <span>Pasaporte Digital de Activos Fotovoltaicos</span>
+                        </h2>
+                        <p class="text-slate-500 text-sm mt-1">Seguimiento punto a punto desde el desmantelamiento hasta la disposición o reuso final.</p>
+                    </div>
+
+                    <div class="flex items-center space-x-2">
+                        <select id="asset-selector" onchange="renderTraceabilityDetails(this.value)" class="px-3 py-2 rounded-xl border border-slate-300 text-xs font-bold text-slate-700 focus:ring-2 focus:ring-brand-500">
+                            <!-- Populated dynamically -->
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Left: Asset QR & Details Card -->
+                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 text-center flex flex-col items-center justify-center">
+                        <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 mb-3" id="qrcode-container">
+                            <!-- QR Code rendered here -->
+                        </div>
+                        <span id="trace-id" class="text-xs font-mono font-bold text-slate-700 bg-slate-200 px-3 py-1 rounded-full">SOL-2026-882</span>
+                        <h3 id="trace-client" class="font-bold text-slate-900 text-base mt-2">Parque Solar Agrícola</h3>
+                        <p id="trace-model" class="text-xs text-slate-500">Canadian Solar 330W (50 unidades)</p>
+
+                        <div class="w-full border-t border-slate-200 mt-4 pt-3 text-left space-y-1.5 text-xs">
+                            <div class="flex justify-between">
+                                <span class="text-slate-500">Fecha de Ingreso:</span>
+                                <span id="trace-date" class="font-semibold text-slate-700">12/Oct/2026</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-500">Ruta Asignada:</span>
+                                <span id="trace-pathway" class="font-bold text-brand-600">Reutilización (Bombeo)</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-500">Ubicación Actual:</span>
+                                <span id="trace-location" class="font-semibold text-slate-700">Centro de Acopio Hermosillo</span>
+                            </div>
+                        </div>
+
+                        <button onclick="downloadPassportPDF()" class="mt-4 w-full py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-bold transition flex items-center justify-center space-x-2">
+                            <i class="fa-solid fa-download"></i>
+                            <span>Descargar Pasaporte Digital (PDF)</span>
+                        </button>
+                    </div>
+
+                    <!-- Right: Lifecycle Timeline -->
+                    <div class="lg:col-span-2 bg-white p-5 rounded-2xl border border-slate-200">
+                        <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-6">Línea de Tiempo del Ciclo de Vida</h3>
+
+                        <div class="relative pl-6 border-l-2 border-brand-500 space-y-8">
+                            <!-- Step 1 -->
+                            <div class="relative">
+                                <div class="absolute -left-[31px] top-0 w-4 h-4 rounded-full bg-brand-500 ring-4 ring-brand-100"></div>
+                                <div>
+                                    <span class="text-xs font-bold text-brand-600">Paso 1: Solicitud e Inspección</span>
+                                    <h4 class="text-sm font-bold text-slate-800">Recepción e Inspección Visual/Técnica</h4>
+                                    <p class="text-xs text-slate-500 mt-0.5">Ingreso al sistema, prueba de diodos de bypass y prueba electroluminiscencia preliminar.</p>
+                                    <span class="inline-block mt-1 text-[10px] bg-slate-100 text-slate-600 font-medium px-2 py-0.5 rounded">Completado por Dpto. Electromecánica</span>
+                                </div>
+                            </div>
+
+                            <!-- Step 2 -->
+                            <div class="relative">
+                                <div class="absolute -left-[31px] top-0 w-4 h-4 rounded-full bg-brand-500 ring-4 ring-brand-100"></div>
+                                <div>
+                                    <span class="text-xs font-bold text-brand-600">Paso 2: Diagnóstico e Algoritmo</span>
+                                    <h4 class="text-sm font-bold text-slate-800">Evaluación en Motor de Decisión SOLAR CIRCULAR 360</h4>
+                                    <p class="text-xs text-slate-500 mt-0.5">Se determinó una aptitud del 78% para Reutilización en sistema de bombeo solar agrícola.</p>
+                                    <span class="inline-block mt-1 text-[10px] bg-emerald-100 text-emerald-800 font-medium px-2 py-0.5 rounded">Ruta Recomendada: Reutilización Directa</span>
+                                </div>
+                            </div>
+
+                            <!-- Step 3 -->
+                            <div class="relative">
+                                <div class="absolute -left-[31px] top-0 w-4 h-4 rounded-full bg-amber-400 ring-4 ring-amber-100"></div>
+                                <div>
+                                    <span class="text-xs font-bold text-amber-600">Paso 3: Acondicionamiento / Reparación Minor</span>
+                                    <h4 class="text-sm font-bold text-slate-800">Limpieza Térmica y Limpieza de Terminales</h4>
+                                    <p class="text-xs text-slate-500 mt-0.5">Sustitución de diodo defectuoso en caja de conexiones y prueba final de potencia.</p>
+                                    <span class="inline-block mt-1 text-[10px] bg-amber-100 text-amber-800 font-medium px-2 py-0.5 rounded">En Proceso en Taller</span>
+                                </div>
+                            </div>
+
+                            <!-- Step 4 -->
+                            <div class="relative">
+                                <div class="absolute -left-[31px] top-0 w-4 h-4 rounded-full bg-slate-300 ring-4 ring-slate-100"></div>
+                                <div>
+                                    <span class="text-xs font-bold text-slate-400">Paso 4: Logística y Destino Final</span>
+                                    <h4 class="text-sm font-bold text-slate-400">Entrega e Instalación en Destino Beneficiario</h4>
+                                    <p class="text-xs text-slate-400 mt-0.5">Traslado optimizado e instalación en pozo comunitario agrícola de Hermosillo.</p>
+                                    <span class="inline-block mt-1 text-[10px] bg-slate-100 text-slate-500 font-medium px-2 py-0.5 rounded">Pendiente de Transporte</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 border-t border-slate-800 py-6 mt-10">
+        <div class="max-w-7xl mx-auto px-4 text-center sm:text-left sm:flex sm:justify-between sm:items-center text-xs space-y-2 sm:space-y-0">
+            <div>
+                <p class="font-bold text-white">GIRASOL &copy; 2026</p>
+                <p class="text-slate-500">SOLUCIONES SOLARES SOSTENIBLES</p>
+            </div>
+            <div class="flex justify-center space-x-4 text-slate-400">
+                <span>Tecnoliguias de la información y Comunicasiones</span> &bull;
+                <span>Electromecánica</span> &bull;
+                <span>Gestión Empresarial</span> &bull;
+                <span>Ing. Industrial</span> &bull;
+                <span>Arquitectura</span> &bull;
+            </div>
+        </div>
+    </footer>
+
+    <!-- MODAL: TEST CASES SIMULATOR (Casos de Prueba) -->
+    <div id="test-cases-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-2xl w-full shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-900 text-white">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-vial text-solar-400"></i>
+                    <h3 class="font-bold text-base">Simulador de Casos de Prueba Predefinidos</h3>
+                </div>
+                <button onclick="closeTestCasesModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+
+            <div class="p-6 space-y-4 overflow-y-auto custom-scrollbar">
+                <p class="text-xs text-slate-600">Seleccione un caso de prueba real para cargar instantáneamente sus parámetros técnicos e interactuar con el Motor de Decisión:</p>
+
+                <!-- Case 1 -->
+                <div onclick="loadTestCase(0)" class="p-4 border border-slate-200 rounded-xl hover:border-brand-500 hover:bg-brand-50/40 cursor-pointer transition flex justify-between items-center group">
+                    <div class="space-y-1">
+                        <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-amber-100 text-amber-800">Caso 1: Diodos Quemados</span>
+                        <h4 class="font-bold text-sm text-slate-900 group-hover:text-brand-600">Parque Solar Agrícola - 50 Paneles</h4>
+                        <p class="text-xs text-slate-500">12 años de uso | Diodos quemados en caja de juntura | 75% Eficiencia</p>
+                    </div>
+                    <span class="text-xs font-bold text-brand-600 group-hover:translate-x-1 transition-transform">Cargar &rarr;</span>
+                </div>
+
+                <!-- Case 2 -->
+                <div onclick="loadTestCase(1)" class="p-4 border border-slate-200 rounded-xl hover:border-brand-500 hover:bg-brand-50/40 cursor-pointer transition flex justify-between items-center group">
+                    <div class="space-y-1">
+                        <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-slate-200 text-slate-800">Caso 2: Vidrio Quebrado</span>
+                        <h4 class="font-bold text-sm text-slate-900 group-hover:text-brand-600">Instalación Residencial - 10 Paneles</h4>
+                        <p class="text-xs text-slate-500">8 años de uso | Vidrio frontal estrellado por granizo | 40% Eficiencia</p>
+                    </div>
+                    <span class="text-xs font-bold text-brand-600 group-hover:translate-x-1 transition-transform">Cargar &rarr;</span>
+                </div>
+
+                <!-- Case 3 -->
+                <div onclick="loadTestCase(2)" class="p-4 border border-slate-200 rounded-xl hover:border-brand-500 hover:bg-brand-50/40 cursor-pointer transition flex justify-between items-center group">
+                    <div class="space-y-1">
+                        <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">Caso 3: Repowering Industrial</span>
+                        <h4 class="font-bold text-sm text-slate-900 group-hover:text-brand-600">Planta Industrial - 200 Paneles</h4>
+                        <p class="text-xs text-slate-500">15 años de uso | Sin daño físico visible | 82% Eficiencia remanente</p>
+                    </div>
+                    <span class="text-xs font-bold text-brand-600 group-hover:translate-x-1 transition-transform">Cargar &rarr;</span>
+                </div>
+            </div>
+
+            <div class="p-4 bg-slate-50 border-t border-slate-100 text-right">
+                <button onclick="closeTestCasesModal()" class="px-4 py-2 border border-slate-300 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- APPLICATION JAVASCRIPT CORE -->
+    <script>
+        // Global Application State Store
+        const state = {
+            requests: [
+                {
+                    id: 'SOL-2026-882',
+                    client: 'Parque Solar Agrícola',
+                    location: 'Hermosillo, Sonora',
+                    distanceKm: 45,
+                    model: 'Canadian Solar 330W',
+                    quantity: 50,
+                    years: 12,
+                    defects: { glass: false, backsheet: false, jbox: true, delamination: false },
+                    efficiency: 75,
+                    assignedPathway: 'Reutilización Directa',
+                    conditionScore: 68,
+                    date: '12/Oct/2026'
+                },
+                {
+                    id: 'SOL-2026-701',
+                    client: 'Residencial Los Arcos',
+                    location: 'Guadalajara, Jalisco',
+                    distanceKm: 18,
+                    model: 'Trina Solar 280W',
+                    quantity: 10,
+                    years: 8,
+                    defects: { glass: true, backsheet: true, jbox: false, delamination: false },
+                    efficiency: 40,
+                    assignedPathway: 'Reciclaje Especializado',
+                    conditionScore: 32,
+                    date: '08/Oct/2026'
+                },
+                {
+                    id: 'SOL-2026-915',
+                    client: 'Zona Industrial Bajío',
+                    location: 'Querétaro, Qro.',
+                    distanceKm: 120,
+                    model: 'Jinko Solar 350W',
+                    quantity: 200,
+                    years: 15,
+                    defects: { glass: false, backsheet: false, jbox: false, delamination: false },
+                    efficiency: 82,
+                    assignedPathway: 'Reutilización Directa',
+                    conditionScore: 84,
+                    date: '15/Oct/2026'
+                }
+            ],
+            activeEvaluation: null,
+            charts: {}
+        };
+
+        // Test Cases Data Definition
+        const testCasesData = [
+            {
+                client: 'Parque Solar Agrícola',
+                location: 'Hermosillo, Sonora',
+                distanceKm: 45,
+                model: 'Canadian Solar 330W',
+                quantity: 50,
+                years: 12,
+                defects: { glass: false, backsheet: false, jbox: true, delamination: false },
+                efficiency: 75,
+                intendedUse: 'agri'
+            },
+            {
+                client: 'Instalación Residencial',
+                location: 'Guadalajara, Jalisco',
+                distanceKm: 25,
+                model: 'Trina Solar 280W',
+                quantity: 10,
+                years: 8,
+                defects: { glass: true, backsheet: true, jbox: false, delamination: true },
+                efficiency: 40,
+                intendedUse: 'auto'
+            },
+            {
+                client: 'Planta Industrial Repowering',
+                location: 'Querétaro, Qro.',
+                distanceKm: 110,
+                model: 'Jinko Solar 350W',
+                quantity: 200,
+                years: 15,
+                defects: { glass: false, backsheet: false, jbox: false, delamination: false },
+                efficiency: 82,
+                intendedUse: 'community'
+            }
+        ];
+
+        // Initialize Application
+        window.addEventListener('DOMContentLoaded', () => {
+            // Set default active evaluation to Case 0
+            state.activeEvaluation = { ...state.requests[0] };
+            
+            // Render UI Components
+            renderRecentTable();
+            renderTraceabilityOptions();
+            initCharts();
+            updateEngineView();
+            renderTraceabilityDetails(state.requests[0].id);
+        });
+
+        // Tab Switching Logic
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+
+            // Style navigation buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('text-brand-100', 'bg-slate-800/80', 'border', 'border-brand-500/30');
+                btn.classList.add('text-slate-300');
+            });
+            
+            const activeBtn = document.getElementById(`nav-${tabId}`);
+            if (activeBtn) {
+                activeBtn.classList.remove('text-slate-300');
+                activeBtn.classList.add('text-brand-100', 'bg-slate-800/80', 'border', 'border-brand-500/30');
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Mobile Menu Toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Modal Controls
+        function openTestCasesModal() {
+            document.getElementById('test-cases-modal').classList.remove('hidden');
+        }
+        function closeTestCasesModal() {
+            document.getElementById('test-cases-modal').classList.add('hidden');
+        }
+
+        // Toast Notification System
+        function showToast(msg) {
+            const toast = document.getElementById('toast-banner');
+            document.getElementById('toast-message').innerText = msg;
+            toast.classList.remove('hidden');
+            setTimeout(() => { closeToast(); }, 5000);
+        }
+        function closeToast() {
+            document.getElementById('toast-banner').classList.add('hidden');
+        }
+
+        // Condition Score Calculation Engine
+        function calculateConditionScore(req) {
+            let score = req.efficiency; // Base from efficiency %
+
+            // Deductions based on defects
+            if (req.defects.glass) score -= 35;
+            if (req.defects.backsheet) score -= 20;
+            if (req.defects.jbox) score -= 10;
+            if (req.defects.delamination) score -= 20;
+
+            // Age factor deduction
+            score -= Math.min(req.years * 1.2, 20);
+
+            return Math.max(0, Math.min(100, Math.round(score)));
+        }
+
+        // Handle Intake Form Submission
+        function handleFormSubmit(e) {
+            e.preventDefault();
+
+            const client = document.getElementById('form-client').value;
+            const location = document.getElementById('form-location').value;
+            const distanceKm = parseFloat(document.getElementById('form-distance').value);
+            const model = document.getElementById('form-model').value;
+            const quantity = parseInt(document.getElementById('form-quantity').value);
+            const years = parseInt(document.getElementById('form-years').value);
+            const efficiency = parseInt(document.getElementById('form-efficiency').value);
+
+            const defects = {
+                glass: document.getElementById('defect-glass').checked,
+                backsheet: document.getElementById('defect-backsheet').checked,
+                jbox: document.getElementById('defect-jbox').checked,
+                delamination: document.getElementById('defect-delamination').checked
+            };
+
+            const newReq = {
+                id: `SOL-2026-${Math.floor(100 + Math.random() * 900)}`,
+                client,
+                location,
+                distanceKm,
+                model,
+                quantity,
+                years,
+                defects,
+                efficiency,
+                date: new Date().toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })
+            };
+
+            newReq.conditionScore = calculateConditionScore(newReq);
+            
+            // Assign optimal route algorithmically
+            if (newReq.conditionScore >= 70) {
+                newReq.assignedPathway = 'Reutilización Directa';
+            } else if (newReq.conditionScore >= 45) {
+                newReq.assignedPathway = 'Rehabilitación';
+            } else {
+                newReq.assignedPathway = 'Reciclaje Especializado';
+            }
+
+            // Save to state
+            state.requests.unshift(newReq);
+            state.activeEvaluation = { ...newReq };
+
+            // Update UI
+            renderRecentTable();
+            renderTraceabilityOptions();
+            updateEngineView();
+            updateDashboardKPIs();
+            
+            showToast(`¡Solicitud ${newReq.id} evaluada y registrada con éxito!`);
+            switchTab('engine');
+        }
+
+        // Load pre-defined Case Study
+        function loadTestCase(index) {
+            const testCase = testCasesData[index];
+            
+            document.getElementById('form-client').value = testCase.client;
+            document.getElementById('form-location').value = testCase.location;
+            document.getElementById('form-distance').value = testCase.distanceKm;
+            document.getElementById('form-model').value = testCase.model;
+            document.getElementById('form-quantity').value = testCase.quantity;
+            document.getElementById('form-years').value = testCase.years;
+            document.getElementById('form-efficiency').value = testCase.efficiency;
+            document.getElementById('efficiency-val').innerText = testCase.efficiency + '%';
+
+            document.getElementById('defect-glass').checked = testCase.defects.glass;
+            document.getElementById('defect-backsheet').checked = testCase.defects.backsheet;
+            document.getElementById('defect-jbox').checked = testCase.defects.jbox;
+            document.getElementById('defect-delamination').checked = testCase.defects.delamination;
+
+            closeTestCasesModal();
+            
+            // Create event mock and trigger form submit
+            const mockEvent = { preventDefault: () => {} };
+            handleFormSubmit(mockEvent);
+        }
+
+        // Update Motor de Decisión View dynamically
+        function updateEngineView() {
+            const req = state.activeEvaluation;
+            if (!req) return;
+
+            document.getElementById('eval-title').innerText = `${req.client} - Lote #${req.id}`;
+            document.getElementById('eval-subtitle').innerText = `${req.quantity} Módulos ${req.model} | ${req.years} Años Uso | Ubicación: ${req.location} (${req.distanceKm} km)`;
+            
+            const score = req.conditionScore || calculateConditionScore(req);
+            document.getElementById('eval-condition-score').innerText = `${score} / 100`;
+            document.getElementById('eval-score-badge').innerText = `${score}%`;
+
+            // Reset Card Styles
+            const pRehab = document.getElementById('pathway-rehab');
+            const pReuse = document.getElementById('pathway-reuse');
+            const pRecycle = document.getElementById('pathway-recycle');
+
+            const bRehab = document.getElementById('badge-rehab');
+            const bReuse = document.getElementById('badge-reuse');
+            const bRecycle = document.getElementById('badge-recycle');
+
+            [pRehab, pReuse, pRecycle].forEach(el => {
+                el.className = "rounded-2xl p-5 border-2 transition-all relative flex flex-col justify-between bg-slate-50 border-slate-200";
+            });
+            [bRehab, bReuse, bRecycle].forEach(el => el.classList.add('hidden'));
+
+            // Dynamic decision logic
+            let rationaleText = "";
+            if (score >= 70) {
+                // Optimal: Reuse
+                pReuse.className = "rounded-2xl p-5 border-2 transition-all relative flex flex-col justify-between bg-emerald-50/60 border-brand-500 ring-2 ring-brand-500/20 shadow-md";
+                bReuse.classList.remove('hidden');
+                bReuse.innerText = "Ruta Óptima Sugerida";
+                rationaleText = `Los paneles presentan excelente integridad física y una eficiencia remanente del ${req.efficiency}%. El modelo recomienda Reutilización Directa en proyectos sociales o de bombeo agrícola local. Esto maximiza la vida residual y ahorra costos de manufactura nueva.`;
+            } else if (score >= 45) {
+                // Optimal: Rehab
+                pRehab.className = "rounded-2xl p-5 border-2 transition-all relative flex flex-col justify-between bg-amber-50/60 border-amber-500 ring-2 ring-amber-500/20 shadow-md";
+                bRehab.classList.remove('hidden');
+                bRehab.innerText = "Ruta Óptima Sugerida";
+                rationaleText = `Los paneles presentan fallas reparables (caja de conexiones/diodos) pero buen estado de celdas. La Rehabilitación tiene un costo estimado de $15-20 USD por unidad, retornando un módulo funcional con valor comercial secundario de ~$55 USD.`;
+            } else {
+                // Optimal: Recycle
+                pRecycle.className = "rounded-2xl p-5 border-2 transition-all relative flex flex-col justify-between bg-slate-100 border-slate-600 ring-2 ring-slate-400 shadow-md";
+                bRecycle.classList.remove('hidden');
+                bRecycle.innerText = "Ruta Óptima Sugerida";
+                rationaleText = `Módulos severamente degradados o con vidrio frontal/backsheet quebrados. La Reutilización representa un riesgo eléctrico. Se canalizan a Reciclaje Especializado para recuperar hasta un 92.5% de su masa en aluminio, vidrio y silicio de alta pureza.`;
+            }
+
+            document.getElementById('eval-rationale').innerText = rationaleText;
+        }
+
+        // Manual Selection of Pathway
+        function selectPathway(pathwayName) {
+            if (!state.activeEvaluation) return;
+            state.activeEvaluation.assignedPathway = pathwayName;
+
+            // Sync with main request list
+            const match = state.requests.find(r => r.id === state.activeEvaluation.id);
+            if (match) match.assignedPathway = pathwayName;
+
+            renderRecentTable();
+            updateDashboardKPIs();
+            showToast(`Ruta cambiada a: ${pathwayName}`);
+        }
+
+        // Render Requests Table
+        function renderRecentTable() {
+            const tbody = document.getElementById('recent-requests-tbody');
+            tbody.innerHTML = '';
+
+            state.requests.forEach(r => {
+                let badgeStyle = 'bg-emerald-100 text-emerald-800 border-emerald-200';
+                if (r.assignedPathway === 'Rehabilitación') badgeStyle = 'bg-amber-100 text-amber-800 border-amber-200';
+                if (r.assignedPathway === 'Reciclaje Especializado') badgeStyle = 'bg-slate-100 text-slate-800 border-slate-200';
+
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition border-b border-slate-100";
+                tr.innerHTML = `
+                    <td class="px-6 py-4 font-bold text-slate-900">${r.id}</td>
+                    <td class="px-6 py-4">
+                        <div class="font-bold text-slate-800">${r.client}</div>
+                        <div class="text-[11px] text-slate-400">${r.location}</div>
+                    </td>
+                    <td class="px-6 py-4">${r.quantity} uds</td>
+                    <td class="px-6 py-4">
+                        <span class="font-bold text-slate-700">${r.efficiency}%</span>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="px-2.5 py-1 rounded-full text-[11px] font-bold border ${badgeStyle}">
+                            ${r.assignedPathway}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="text-xs text-brand-600 font-semibold"><i class="fa-solid fa-spinner animate-spin mr-1"></i> Evaluado</span>
+                    </td>
+                    <td class="px-6 py-4 text-right">
+                        <button onclick="inspectRequest('${r.id}')" class="text-brand-600 hover:text-brand-800 font-bold hover:underline">Ver Trazabilidad</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Inspect Specific Request in Traceability Tab
+        function inspectRequest(id) {
+            const req = state.requests.find(r => r.id === id);
+            if (req) {
+                state.activeEvaluation = { ...req };
+                renderTraceabilityDetails(id);
+                document.getElementById('asset-selector').value = id;
+                switchTab('traceability');
+            }
+        }
+
+        // Populate Traceability Dropdown Options
+        function renderTraceabilityOptions() {
+            const selector = document.getElementById('asset-selector');
+            selector.innerHTML = '';
+            state.requests.forEach(r => {
+                const opt = document.createElement('option');
+                opt.value = r.id;
+                opt.innerText = `${r.id} - ${r.client}`;
+                selector.appendChild(opt);
+            });
+        }
+
+        // Render Traceability & QR Passport
+        function renderTraceabilityDetails(id) {
+            const req = state.requests.find(r => r.id === id) || state.requests[0];
+            if (!req) return;
+
+            document.getElementById('trace-id').innerText = req.id;
+            document.getElementById('trace-client').innerText = req.client;
+            document.getElementById('trace-model').innerText = `${req.model} (${req.quantity} unidades)`;
+            document.getElementById('trace-date').innerText = req.date || '14/Oct/2026';
+            document.getElementById('trace-pathway').innerText = req.assignedPathway;
+            document.getElementById('trace-location').innerText = req.location;
+
+            // Generate QR Code dynamically
+            const container = document.getElementById('qrcode-container');
+            container.innerHTML = '';
+            new QRCode(container, {
+                text: `https://solarcircular360.org/passport/${req.id}`,
+                width: 120,
+                height: 120,
+                colorDark : "#0f172a",
+                colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.H
+            });
+        }
+
+        // Download Passport PDF Mock
+        function downloadPassportPDF() {
+            showToast("Generando y descargando Pasaporte Digital en formato PDF...");
+        }
+
+        // Update Dashboard KPIs dynamically based on current state requests
+        function updateDashboardKPIs() {
+            let totalMods = 0;
+            state.requests.forEach(r => totalMods += r.quantity);
+
+            document.getElementById('kpi-total-modules').innerText = (1248 + totalMods).toLocaleString();
+            
+            // CO2 saved: ~0.15 Tons per module
+            const co2 = ((1248 + totalMods) * 0.15).toFixed(1);
+            document.getElementById('kpi-co2-saved').innerText = co2;
+
+            // Material recovered: ~18kg per module
+            const mat = (((1248 + totalMods) * 18) / 1000).toFixed(1);
+            document.getElementById('kpi-materials-recovered').innerText = mat;
+
+            // Refresh Chart Data
+            if (state.charts.destinations) {
+                let countReuse = 0, countRehab = 0, countRecycle = 0;
+                state.requests.forEach(r => {
+                    if (r.assignedPathway === 'Reutilización Directa') countReuse += r.quantity;
+                    else if (r.assignedPathway === 'Rehabilitación') countRehab += r.quantity;
+                    else countRecycle += r.quantity;
+                });
+
+                state.charts.destinations.data.datasets[0].data = [650 + countReuse, 320 + countRehab, 278 + countRecycle];
+                state.charts.destinations.update();
+            }
+        }
+
+        // Initialize Chart.js Data Visualizations
+        function initCharts() {
+            // Chart 1: Circular Destination Doughnut
+            const ctx1 = document.getElementById('chartDestinations').getContext('2d');
+            state.charts.destinations = new Chart(ctx1, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Reutilización', 'Rehabilitación', 'Reciclaje Especializado'],
+                    datasets: [{
+                        data: [650, 320, 278],
+                        backgroundColor: ['#10B981', '#F59E0B', '#475569'],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    cutout: '70%'
+                }
+            });
+
+            // Chart 2: Material Recovery Bar Chart
+            const ctx2 = document.getElementById('chartMaterials').getContext('2d');
+            state.charts.materials = new Chart(ctx2, {
+                type: 'bar',
+                data: {
+                    labels: ['Vidrio Frontal', 'Marco de Aluminio', 'Celdas de Silicio', 'Cobre & Plata', 'Polímeros (EVA/Backsheet)'],
+                    datasets: [{
+                        label: 'Kilogramos Recuperados',
+                        data: [14200, 3800, 850, 240, 1100],
+                        backgroundColor: ['#38BDF8', '#94A3B8', '#10B981', '#F59E0B', '#CBD5E1'],
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: '#F1F5F9' }
+                        },
+                        x: {
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
